@@ -107,6 +107,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:src="@drawable/biz_plugin_weather_0_50"/>
+
             <!--PM 2.5-->
             <TextView
                 android:id="@+id/content_pm"

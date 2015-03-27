@@ -1,5 +1,7 @@
 package com.example.eric.myweather;
 
+import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.media.Image;
 import android.os.Handler;
@@ -23,6 +25,8 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -35,7 +39,7 @@ import java.util.zip.GZIPInputStream;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener{
 
-    private ImageView mUpdatebtn;
+    private ImageView mUpdatebtn, mChooseCitybtn;
     private TodayWeather todayWeather;
 
     private static final int UPDATE_TODAY_WEATHER = 1;
@@ -63,6 +67,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mUpdatebtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdatebtn.setOnClickListener(this);
 
+        mChooseCitybtn = (ImageView) findViewById(R.id.title_city_manager);
+        mChooseCitybtn.setOnClickListener(this);
+
         initView();
     }
 
@@ -80,13 +87,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 Log.d("myWeather","网络挂了");
                 Toast.makeText(MainActivity.this,"网络挂了！", Toast.LENGTH_LONG).show();
             }
-
+        }else if(view.getId() == R.id.title_city_manager) {
+            Intent intent = new Intent("android.intent.action.ChooseCity");
+            startActivity(intent);
         }
     }
 
     private void queryWeatherCode(String cityCode) {
+        //xml
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey="+cityCode;
-        Log.d("myWeather", address);
+
         new Thread(new Runnable() {
             @Override
             public void run() {
@@ -108,6 +118,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                         }
                         String responseStr = response.toString();
                         Log.d("myWeather", responseStr);
+
                         todayWeather = parseXML(responseStr);
                         if(todayWeather != null) {
                             Log.d("todayWeather", todayWeather.toString());
