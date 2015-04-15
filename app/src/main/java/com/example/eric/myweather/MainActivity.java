@@ -1,9 +1,8 @@
 package com.example.eric.myweather;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.content.SharedPreferences;
-import android.media.Image;
+import android.graphics.drawable.Drawable;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v7.app.ActionBarActivity;
@@ -12,21 +11,19 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.eric.bean.TodayWeather;
 import com.example.eric.util.NetUtil;
+import com.example.eric.util.PinYinUtil;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -34,6 +31,7 @@ import java.io.BufferedReader;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
+import java.lang.reflect.Field;
 import java.util.zip.GZIPInputStream;
 
 
@@ -63,6 +61,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wheather_info);
+        Log.d("MyAPP","MainActivity->onCreate()");
 
         mUpdatebtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdatebtn.setOnClickListener(this);
@@ -77,13 +76,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onClick(View view) {
         if(view.getId() == R.id.title_update_btn) {
             SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
-            String cityCode = sharedPreferences.getString("main_city_code","101010100");
+            String cityCode = sharedPreferences.getString("main_city_code","101010100");//缺省值为北京
             Log.d("myWeather", cityCode);
             if(NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE) {
                 Log.d("myWeather", "网络OK");
                 queryWeatherCode(cityCode);
-            }else
-            {
+            }else {
                 Log.d("myWeather","网络挂了");
                 Toast.makeText(MainActivity.this,"网络挂了！", Toast.LENGTH_LONG).show();
             }
@@ -187,11 +185,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                                 dateCount++;
                             }else if(xmlPullParser.getName().equals("high") && highCount == 0) {
                                 eventType = xmlPullParser.next();
-                                todayWeather.setHigh(xmlPullParser.getText());
+                                todayWeather.setHigh(xmlPullParser.getText().substring(2));
                                 highCount++;
                             }else if(xmlPullParser.getName().equals("low") && lowCount == 0) {
                                 eventType = xmlPullParser.next();
-                                todayWeather.setLow(xmlPullParser.getText());
+                                todayWeather.setLow(xmlPullParser.getText().substring(2));
                                 lowCount++;
                             }else if(xmlPullParser.getName().equals("type") && typeCount == 0) {
                                 eventType = xmlPullParser.next();
@@ -199,7 +197,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                                 typeCount++;
                             }
                         }
-
                         break;
 
                     //判断当前事件是否为标签元素结束事件
@@ -222,9 +219,57 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         pmDataTv.setText(todayWeather.getPm25());
         pmQualityTv.setText(todayWeather.getQuality());
         weekTv.setText(todayWeather.getDate());
-        temperatureTv.setText(todayWeather.getHigh()+"~"+todayWeather.getLow());
+        //String highTemp = todayWeather.getHigh().substring(todayWeather.getHigh().lastIndexOf("温")+1);
+        //String lowTemp = todayWeather.getLow().substring(todayWeather.getLow().lastIndexOf("温")+1);
+        String highTemp = todayWeather.getHigh().trim();
+        String lowTemp = todayWeather.getLow().trim();
+        temperatureTv.setText(lowTemp+"~"+highTemp);
         climateTv.setText(todayWeather.getType());
         windTv.setText("风力："+todayWeather.getFengli());
+
+        //update the pm Picture String
+        int pmValue = Integer.parseInt(todayWeather.getPm25());
+        String pmImgStr = "0_50";
+        if(pmValue > 50 && pmValue <201) {
+            int startV = (pmValue -1)/50 * 50 + 1;
+            int endV = ((pmValue - 1)/50 + 1) * 50;
+            pmImgStr = Integer.toString(startV) + "_" + Integer.toString(endV);
+        }else if(pmValue>=201 && pmValue < 301) {
+            pmImgStr = "201_300";
+        }else if(pmValue >= 301) {
+            pmImgStr = "greater_300";
+        }
+
+        //update the weather picture
+        String typeImg = "biz_plugin_weather_" + PinYinUtil.converterToSpell(todayWeather.getType());
+        Class aClass = R.drawable.class;
+        int typeId = -1, pmImgId = -1;
+        try {
+            Field field = aClass.getField(typeImg);
+            Object value = field.get(Integer.valueOf(0));
+            typeId = (int) value;
+        }catch (NoSuchFieldException e) {
+            if(-1 == typeId)
+                e.getMessage();
+                typeId = R.drawable.biz_plugin_weather_qing;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        try {
+            Field pmField = aClass.getField("biz_plugin_weather_" + pmImgStr);
+            Object pmImg0 = pmField.get(Integer.valueOf(0));
+            pmImgId = (int)pmImg0;
+        }
+        catch(NoSuchFieldException e) {
+            if(-1 == pmImgId)
+                pmImgId = R.drawable.biz_plugin_weather_0_50;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+        Drawable drawable = getResources().getDrawable(typeId);
+        weatherImg.setImageDrawable(drawable);
+        drawable = getResources().getDrawable(pmImgId);
+        pmImg.setImageDrawable(drawable);
         Toast.makeText(MainActivity.this,"更新成功！",Toast.LENGTH_SHORT).show();
     }
 
