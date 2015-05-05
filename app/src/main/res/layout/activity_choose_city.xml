@@ -34,11 +34,30 @@
             android:gravity="center"/>
     </RelativeLayout>
 
+    <TextView
+        android:id="@+id/search_edit"
+        android:layout_below="@id/select_title"
+        android:layout_width="match_parent"
+        android:layout_height="40.0dp"
+        android:layout_margin="10.0dp"
+        android:hint="搜索全国城市"
+        android:drawableLeft="@drawable/magnifying_glass"
+        android:drawablePadding="8.0dp"
+        android:paddingBottom="8.0dp"
+        android:paddingLeft="10.0dp"
+        android:paddingRight="30.0dp"
+        android:paddingTop="8.0dp"
+        android:singleLine="true"
+        android:background="@drawable/contact_search_box_edittext_keyword_background"
+        android:textColor="#ff000000"
+        android:textColorHint="#ffcccccc"
+        android:textSize="15.0sp"/>
+
     <ListView
         android:id="@+id/city_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/select_title">
+        android:layout_below="@id/search_edit">
 
         </ListView>
 

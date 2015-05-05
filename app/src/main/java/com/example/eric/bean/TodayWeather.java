@@ -1,9 +1,20 @@
 package com.example.eric.bean;
 
+import com.example.eric.myweather.R;
+import com.example.eric.util.PinYinUtil;
+
+import java.lang.reflect.Field;
+
 /**
  * Created by Eric on 2015/3/23.
  */
 public class TodayWeather {
+    private String yest_date;
+    private String yest_high;
+    private String yest_low;
+    private String yest_type;
+    private String yest_fengli;
+
     private String city;
     private String updatetime;
     private String wendu;
@@ -11,11 +22,18 @@ public class TodayWeather {
     private String pm25;
     private String quality;
     private String fengxiang;
-    private String fengli;
-    private String date;
-    private String high;
-    private String low;
-    private String type;
+    private String[] fengli = new String[5];
+    private String[] date = new String[5];
+    private String[] high = new String[5];
+    private String[] low = new String[5];
+    private String[] type = new String[5];
+
+    public TodayWeather() {
+        this.pm25 = "0";
+        for(int i=0;i<type.length;i++)
+            type[i] = "晴";
+    }
+
 
     public String getCity() {
         return city;
@@ -73,44 +91,44 @@ public class TodayWeather {
         this.fengxiang = fengxiang;
     }
 
-    public String getFengli() {
-        return fengli;
+    public String getFengli(int pos) {
+        return fengli[pos];
     }
 
-    public void setFengli(String fengli) {
-        this.fengli = fengli;
+    public void setFengli(String fengli,int pos) {
+        this.fengli[pos] = fengli;
     }
 
-    public String getDate() {
-        return date;
+    public String getDate(int pos) {
+        return date[pos];
     }
 
-    public void setDate(String date) {
-        this.date = date;
+    public void setDate(String date, int pos) {
+        this.date[pos] = date;
     }
 
-    public String getHigh() {
-        return high;
+    public String getHigh(int pos) {
+        return high[pos];
     }
 
-    public void setHigh(String high) {
-        this.high = high;
+    public void setHigh(String high,int pos) {
+        this.high[pos] = high;
     }
 
-    public String getType() {
-        return type;
+    public String getType(int pos) {
+        return type[pos];
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setType(String type,int pos) {
+        this.type[pos] = type;
     }
 
-    public String getLow() {
-        return low;
+    public String getLow(int pos) {
+        return low[pos];
     }
 
-    public void setLow(String low) {
-        this.low = low;
+    public void setLow(String low,int pos) {
+        this.low[pos] = low;
     }
     public String toString() {
         return "TodayWeather{" + '\'' +
@@ -121,11 +139,70 @@ public class TodayWeather {
                 ", pm25='" + pm25 + '\'' +
                 ", quality='" + quality + '\'' +
                 ", fengxiang='" + fengxiang + '\'' +
-                ", fengli='" + fengli + '\'' +
-                ", date='" + date + '\'' +
-                ", high='" + high + '\'' +
-                ", low='" + low + '\'' +
-                ", type='" + type + '\'' +
+                ", fengli='" + fengli[0] + '\'' +
+                ", date='" + date[0] + '\'' +
+                ", high='" + high[0] + '\'' +
+                ", low='" + low[0] + '\'' +
+                ", type='" + type[0] + '\'' +
                 '}';
+    }
+
+    public String getYest_date() {
+        return yest_date;
+    }
+
+    public void setYest_date(String yest_date) {
+        this.yest_date = yest_date;
+    }
+
+    public String getYest_high() {
+        return yest_high;
+    }
+
+    public void setYest_high(String yest_high) {
+        this.yest_high = yest_high;
+    }
+
+    public String getYest_low() {
+        return yest_low;
+    }
+
+    public void setYest_low(String yest_low) {
+        this.yest_low = yest_low;
+    }
+
+    public String getYest_type() {
+        return yest_type;
+    }
+
+    public void setYest_type(String yest_type) {
+        this.yest_type = yest_type;
+    }
+
+    public String getYest_fengli() {
+        return yest_fengli;
+    }
+
+    public void setYest_fengli(String yest_fengli) {
+        this.yest_fengli = yest_fengli;
+    }
+
+    public int getTypeId(String type) {
+        String typeImg = "biz_plugin_weather_" + PinYinUtil.converterToSpell(type);
+        Class aClass = R.drawable.class;
+        int typeId = -1;
+        try {
+            Field field = aClass.getField(typeImg);
+            Object value = field.get(Integer.valueOf(0));
+            typeId = (int) value;
+        }catch (NoSuchFieldException e) {
+            if(-1 == typeId)
+                e.getMessage();
+            typeId = R.drawable.biz_plugin_weather_qing;
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return typeId;
     }
 }

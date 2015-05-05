@@ -20,7 +20,7 @@ import java.util.List;
 public class MyApplication extends Application{
     private static final String TAG = "MyAPP";
 
-    private static Application mApplication;
+    private static MyApplication mApplication;
     List<City> mCityList;
     private CityDB mCityDB;
 
@@ -35,7 +35,7 @@ public class MyApplication extends Application{
         initCityList();
     }
 
-    public static Application getInstance() {
+    public static MyApplication getInstance() {
         return mApplication;
     }
 
@@ -83,20 +83,24 @@ public class MyApplication extends Application{
 
     private boolean prepareCityList() {
         mCityList = mCityDB.getAllCity();
-        for (City city : mCityList) {
-            String cityName = city.getCity();
-            //Log.d(TAG, cityName);
-        }
+//        for (City city : mCityList) {
+//            String cityName = city.getCity();
+//            Log.d(TAG, cityName);
+//        }
         return true;
     }
     public ArrayList<String> showCityList(){
         ArrayList<String> data;
         data = new ArrayList<String>();
-        mCityList = mCityDB.getAllCity();
+        //mCityList = mCityDB.getAllCity();
         for(City city : mCityList) {
-            String cityName = city.getCity();
+            String cityName = city.getProvince() + "-" + city.getCity();
             data.add(cityName);
         }
         return data;
+    }
+    public City getCity(int index) {
+        City city = mCityList.get(index);
+        return city;
     }
 }
