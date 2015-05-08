@@ -92,7 +92,6 @@ public class MyApplication extends Application{
     public ArrayList<String> showCityList(){
         ArrayList<String> data;
         data = new ArrayList<String>();
-        //mCityList = mCityDB.getAllCity();
         for(City city : mCityList) {
             String cityName = city.getProvince() + "-" + city.getCity();
             data.add(cityName);
