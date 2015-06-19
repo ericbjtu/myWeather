@@ -97,6 +97,7 @@ public class ChooseCity extends ActionBarActivity implements View.OnClickListene
         String[] data = new String[mCityNameData.size()];
         for(int i=0,j=mCityNameData.size();i<j;i++){
             data[i]=mCityNameData.get(i);
+            reLocation.put(i,i);
         }
 
         mlistView = (ListView) findViewById(R.id.city_list_view);
@@ -107,6 +108,7 @@ public class ChooseCity extends ActionBarActivity implements View.OnClickListene
         mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                //Toast.makeText(ChooseCity.this, "You have selected "+position,Toast.LENGTH_LONG).show();
                 int pos = reLocation.get(position);
                 City city = m_myApplication.getCity(pos);
                 String returnCityNumber = city.getNumber();
