@@ -40,6 +40,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.zip.GZIPInputStream;
 
+import cn.jpush.android.api.JPushInterface;
+
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener, ViewPager.OnPageChangeListener{
 
@@ -89,6 +91,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wheather_info);
         Log.d("MyAPP","MainActivity->onCreate()");
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
 
         mUpdatebtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdatebtn.setOnClickListener(this);
