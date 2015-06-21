@@ -1,0 +1,61 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:padding="@dimen/widget_margin">
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/tempNowWidgetTV"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:text="30 ℃"
+            android:textSize="35sp"
+            android:textColor="#ffffff"
+            android:layout_centerVertical = "true"
+            android:layout_centerHorizontal = "true"
+           />
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="10dp"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/LocationWidgetTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="北京"
+                android:textSize="15sp"
+                android:textColor="#ffffff"
+                android:layout_centerVertical = "true"
+                android:layout_centerHorizontal = "true"
+                />
+            <TextView
+                android:id="@+id/weatherDesWidgetTV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="晴"
+                android:textSize="15sp"
+                android:textColor="#ffffff"
+                android:layout_centerVertical = "true"
+                android:layout_centerHorizontal = "true"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <ImageView
+        android:id="@+id/weatherImgWidgetIV"
+        android:layout_width="70dp"
+        android:layout_height="70dp"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="30dp"
+        android:src="@drawable/biz_plugin_weather_qing"
+        />
+
+</RelativeLayout>

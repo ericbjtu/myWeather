@@ -92,8 +92,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wheather_info);
         Log.d("MyAPP","MainActivity->onCreate()");
-        JPushInterface.setDebugMode(true);
-        JPushInterface.init(this);
+
+        //JPushInterface.setDebugMode(true);
+        //JPushInterface.init(this);
 
         mUpdatebtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdatebtn.setOnClickListener(this);
@@ -107,7 +108,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         titleCityNameTv = (TextView) findViewById(R.id.title_city_name);
         SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
         String cityName = sharedPreferences.getString("main_city_name","北京");//缺省值为北京
-        String cityCode= sharedPreferences.getString("main_city_code","");
+        String cityCode= sharedPreferences.getString("main_city_code","101010100");
         titleCityNameTv.setText(cityName+"天气");
         queryWeatherCode(cityCode);
 
