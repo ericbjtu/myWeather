@@ -14,8 +14,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-import cn.jpush.android.api.JPushInterface;
-
 /**
  * Created by Eric on 2015/3/27.
  */
@@ -35,7 +33,6 @@ public class MyApplication extends Application{
 
         mCityDB = openCityDB();
         initCityList();
-
     }
 
     public static MyApplication getInstance() {
