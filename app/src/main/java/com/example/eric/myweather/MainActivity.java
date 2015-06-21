@@ -2,18 +2,20 @@ package com.example.eric.myweather;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -27,7 +29,6 @@ import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.DefaultHttpClient;
-import org.w3c.dom.Text;
 import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
@@ -105,8 +106,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         titleCityNameTv = (TextView) findViewById(R.id.title_city_name);
         SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
-        String cityCode = sharedPreferences.getString("main_city_name","北京");//缺省值为北京
-        titleCityNameTv.setText(cityCode+"天气");
+        String cityName = sharedPreferences.getString("main_city_name","北京");//缺省值为北京
+        String cityCode= sharedPreferences.getString("main_city_code","");
+        titleCityNameTv.setText(cityName+"天气");
+        queryWeatherCode(cityCode);
 
         initView();
         initDots();
@@ -209,6 +212,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
             }
         }).start();
+        updateBackground();
     }
 
     private TodayWeather parseXML(String xmlData) {
@@ -473,6 +477,38 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 queryWeatherCode(cityNumber);
             }
         }
+    }
+    protected  void updateBackground(){
+        //添加城市的北京图片
+        SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
+        String cityName=sharedPreferences.getString("main_city_name","");
+        LinearLayout lly=(LinearLayout)findViewById(R.id.content);
+        Resources resources = getBaseContext().getResources();
+        Drawable d=resources.getDrawable(R.drawable.city_beijing);
+        switch (cityName){
+            case "北京":
+                d=resources.getDrawable(R.drawable.city_beijing);
+                break;
+            case "香港":
+                d=resources.getDrawable(R.drawable.city_hongkong);
+                break;
+            case "南京":
+                d=resources.getDrawable(R.drawable.city_nanjing);
+                break;
+            case "上海":
+                d=resources.getDrawable(R.drawable.city_shanghai);
+                break;
+            case "天津":
+                d=resources.getDrawable(R.drawable.city_tianjing);
+                break;
+            case "武汉":
+                d=resources.getDrawable(R.drawable.city_wuhan);
+                break;
+            case "深圳":
+                d=resources.getDrawable(R.drawable.biz_plugin_weather_shenzhen_bg);
+                break;
+        }
+        lly.setBackgroundDrawable(d);
     }
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
