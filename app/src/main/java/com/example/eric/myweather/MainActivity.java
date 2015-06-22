@@ -1,6 +1,7 @@
 package com.example.eric.myweather;
 
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
@@ -53,7 +54,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         public void handleMessage(Message msg) {
             switch (msg.what) {
                 case UPDATE_TODAY_WEATHER:
-                    updateTodayWeather((TodayWeather)msg.obj);
+                    TodayWeather w=(TodayWeather)msg.obj;
+                    updateTodayWeather(w);
+                    updateShortcutInfo(w);
                     break;
                 default:
                     break;
@@ -103,7 +106,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         titleCityNameTv = (TextView) findViewById(R.id.title_city_name);
         SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
         String cityName = sharedPreferences.getString("main_city_name","北京");//缺省值为北京
-        String cityCode= sharedPreferences.getString("main_city_code","");
+        String cityCode= sharedPreferences.getString("main_city_code","101010100");
         titleCityNameTv.setText(cityName+"天气");
         queryWeatherCode(cityCode);
 
@@ -474,6 +477,12 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             }
         }
     }
+    protected void updateShortcutInfo(TodayWeather w){
+        Intent i =new Intent();
+        i.setAction("android.appwidget.action.APPWIDGET_UPDATE");
+        i.putExtra("wendu",w.getWendu());
+        sendBroadcast(i);
+    }
     protected  void updateBackground(){
         //添加城市的北京图片
         SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
@@ -547,6 +556,5 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     @Override
     public void onPageScrollStateChanged(int state) {
-
     }
 }
