@@ -37,4 +37,21 @@ public class CityDB {
         c.close(); //关闭游标，释放资源
         return list;
     }
+    public List<City> getCurCity(String key){
+        Cursor c = db.rawQuery("SELECT * from " + CITY_TABLE_NAME + " WHERE city like '%"+key+"%'"+"or allpy like '%"+key+"%'", null);
+        List<City> list = new ArrayList<City>();
+
+        while (c.moveToNext()) {
+            String province = c.getString(c.getColumnIndex("province"));
+            String city = c.getString(c.getColumnIndex("city"));
+            String number = c.getString(c.getColumnIndex("number"));
+            String allPY = c.getString(c.getColumnIndex("allpy"));
+            String allFirstPY = c.getString(c.getColumnIndex("allfirstpy"));
+            String firstPY = c.getString(c.getColumnIndex("firstpy"));
+            City item = new City(province, city, number, firstPY, allPY, allFirstPY);
+            list.add(item);
+        }
+        c.close();//关闭游标，释放资源
+        return list;
+    }
 }

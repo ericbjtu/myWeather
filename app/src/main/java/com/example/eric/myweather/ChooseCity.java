@@ -24,6 +24,7 @@ import com.example.eric.util.PinYinUtil;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class ChooseCity extends ActionBarActivity implements View.OnClickListener{
@@ -34,7 +35,7 @@ public class ChooseCity extends ActionBarActivity implements View.OnClickListene
     private MyApplication m_myApplication;
 
     private EditText mEditText;
-    private Map<Integer,Integer> reLocation;
+    private List<City> mSearchList;
 
     TextWatcher mTextWatcher = new TextWatcher() {
         private CharSequence temp;
@@ -46,24 +47,13 @@ public class ChooseCity extends ActionBarActivity implements View.OnClickListene
 
         @Override
         public void onTextChanged(CharSequence s, int start, int before, int count) {
-            reLocation.clear();
             String searchKey = s.toString();
+            mSearchList = m_myApplication.showCurCityList(searchKey);
 
-            ArrayList<String> mSearchList = new ArrayList<String>();
-            ArrayList<String> mCityNameData = m_myApplication.showCityList();
-            int m=0;
-            for(int i=0,j=mCityNameData.size();i<j;i++){
-                String cityName = PinYinUtil.converterToSpell(mCityNameData.get(i));
-                int index = cityName.indexOf(searchKey);
-
-                if(index != -1) {
-                    mSearchList.add(mCityNameData.get(i));
-                    reLocation.put(m,i);
-                    m++;
-                }
-            }
             String[] data = new String[mSearchList.size()];
-            mSearchList.toArray(data);
+            for(int i=0,j=mSearchList.size();i<j;i++){
+                data[i]= mSearchList.get(i).getProvince() + "-" + mSearchList.get(i).getCity();
+            }
             ArrayAdapter<String> adapter;
             adapter = new ArrayAdapter<String>(ChooseCity.this,android.R.layout.simple_expandable_list_item_1,data);
             mlistView.setAdapter(adapter);
@@ -91,13 +81,13 @@ public class ChooseCity extends ActionBarActivity implements View.OnClickListene
 
         mEditText = (EditText) findViewById(R.id.search_edit);
         mEditText.addTextChangedListener(mTextWatcher);
-        reLocation = new HashMap<Integer,Integer>();
 
-        ArrayList<String> mCityNameData = m_myApplication.showCityList();
-        String[] data = new String[mCityNameData.size()];
-        for(int i=0,j=mCityNameData.size();i<j;i++){
-            data[i]=mCityNameData.get(i);
-            reLocation.put(i,i);
+        mSearchList = new ArrayList<City>();
+        mSearchList = m_myApplication.getAllCityList();
+
+        String[] data = new String[mSearchList.size()];
+        for(int i=0,j=mSearchList.size();i<j;i++){
+            data[i]= mSearchList.get(i).getProvince() + "-" + mSearchList.get(i).getCity();
         }
 
         mlistView = (ListView) findViewById(R.id.city_list_view);
@@ -109,8 +99,7 @@ public class ChooseCity extends ActionBarActivity implements View.OnClickListene
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 //Toast.makeText(ChooseCity.this, "You have selected "+position,Toast.LENGTH_LONG).show();
-                int pos = reLocation.get(position);
-                City city = m_myApplication.getCity(pos);
+                City city = mSearchList.get(position);
                 String returnCityNumber = city.getNumber();
                 String returnCityName = city.getCity();
 

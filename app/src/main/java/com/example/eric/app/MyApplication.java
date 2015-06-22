@@ -101,6 +101,19 @@ public class MyApplication extends Application{
         }
         return data;
     }
+
+    public List<City> getAllCityList(){
+        List<City> mAllCityList = new ArrayList<City>();
+        mAllCityList = mCityDB.getAllCity();
+        return mAllCityList;
+    }
+
+    public List<City> showCurCityList(String key){
+        List<City> mCurCityList = new ArrayList<City>();
+        mCurCityList = mCityDB.getCurCity(key);
+        return mCurCityList;
+    }
+
     public City getCity(int index) {
         City city = mCityList.get(index);
         return city;

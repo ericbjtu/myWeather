@@ -125,17 +125,11 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 }
             }
             @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
+            public void onStatusChanged(String provider, int status, Bundle extras) {}
             @Override
-            public void onProviderEnabled(String provider) {
-
-            }
+            public void onProviderEnabled(String provider) {}
             @Override
-            public void onProviderDisabled(String provider) {
-
-            }
+            public void onProviderDisabled(String provider) {}
         };
 
         mUpdatebtn = (ImageView) findViewById(R.id.title_update_btn);
