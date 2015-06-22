@@ -114,8 +114,12 @@ public class MyApplication extends Application{
         return mCurCityList;
     }
 
-    public City getCity(int index) {
-        City city = mCityList.get(index);
+    public City getCityByString(String key) {
+        List<City> mCurCityList = new ArrayList<City>();
+        mCurCityList = mCityDB.getCurCity(key);
+        City city = null;
+        if(mCurCityList.size()>0)
+             city = mCurCityList.get(0);
         return city;
     }
 }

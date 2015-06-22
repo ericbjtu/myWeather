@@ -32,6 +32,8 @@ import com.baidu.location.BDLocation;
 import com.baidu.location.BDLocationListener;
 import com.baidu.location.LocationClient;
 import com.baidu.location.LocationClientOption;
+import com.example.eric.app.MyApplication;
+import com.example.eric.bean.City;
 import com.example.eric.bean.TodayWeather;
 import com.example.eric.util.NetUtil;
 import com.example.eric.util.PinYinUtil;
@@ -68,6 +70,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public BDLocationListener myListener = new MyLocationListener();
     private LocationClientOption.LocationMode tempMode = LocationClientOption.LocationMode.Hight_Accuracy;
     private String tempcoor="gcj02";
+
+    private MyApplication m_myApplication;
 
     private static final int UPDATE_TODAY_WEATHER = 1;
     private Handler mHandler = new Handler() {
@@ -111,6 +115,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         super.onCreate(savedInstanceState);
         setContentView(R.layout.wheather_info);
         Log.d("MyAPP","MainActivity->onCreate()");
+        m_myApplication = MyApplication.getInstance();
 
         //JPushInterface.setDebugMode(true);
         //JPushInterface.init(this);
@@ -567,7 +572,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
@@ -577,9 +581,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     @Override
-    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
-
-    }
+    public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {}
 
     @Override
     public void onPageSelected(int position) {
@@ -688,6 +690,20 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 sb.append("\ncityName : ");
                 sb.append(cityName);
                 mLocationClient.stop();
+                City city = m_myApplication.getCityByString(cityName);
+                if(city != null) {
+                    String returnCityNumber = city.getNumber();
+                    String returnCityName = city.getCity();
+
+                    //点击后切换到指定城市
+                    SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString("main_city_code", returnCityNumber);
+                    editor.putString("main_city_name", returnCityName);
+                    editor.commit();
+
+                    queryWeatherCode(returnCityNumber);
+                }
             }
 
             Log.d("MAP",sb.toString());
