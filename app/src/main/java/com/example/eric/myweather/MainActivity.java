@@ -1,12 +1,20 @@
 package com.example.eric.myweather;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
+import android.location.Address;
+import android.location.Criteria;
+import android.location.Geocoder;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.provider.Settings;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBarActivity;
 import android.util.Log;
@@ -20,6 +28,10 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.baidu.location.BDLocation;
+import com.baidu.location.BDLocationListener;
+import com.baidu.location.LocationClient;
+import com.baidu.location.LocationClientOption;
 import com.example.eric.bean.TodayWeather;
 import com.example.eric.util.NetUtil;
 import com.example.eric.util.PinYinUtil;
@@ -33,6 +45,7 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -46,9 +59,15 @@ import cn.jpush.android.api.JPushInterface;
 
 public class MainActivity extends ActionBarActivity implements View.OnClickListener, ViewPager.OnPageChangeListener{
 
-    private ImageView mUpdatebtn, mChooseCitybtn;
+    private ImageView mUpdatebtn, mChooseCitybtn,mLocationbtn;
     private ProgressBar mUpdateProBar;
     private TodayWeather todayWeather;
+
+    LocationListener locationListener;
+    public LocationClient mLocationClient = null;
+    public BDLocationListener myListener = new MyLocationListener();
+    private LocationClientOption.LocationMode tempMode = LocationClientOption.LocationMode.Hight_Accuracy;
+    private String tempcoor="gcj02";
 
     private static final int UPDATE_TODAY_WEATHER = 1;
     private Handler mHandler = new Handler() {
@@ -96,6 +115,29 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         //JPushInterface.setDebugMode(true);
         //JPushInterface.init(this);
 
+        mLocationClient = new LocationClient(getApplicationContext()); //声明LocationClient类
+        mLocationClient.registerLocationListener(myListener); //注册监听函数
+        locationListener = new LocationListener() {
+            @Override
+            public void onLocationChanged(Location location) {
+                if(location != null) {
+                    ;
+                }
+            }
+            @Override
+            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+            }
+            @Override
+            public void onProviderEnabled(String provider) {
+
+            }
+            @Override
+            public void onProviderDisabled(String provider) {
+
+            }
+        };
+
         mUpdatebtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdatebtn.setOnClickListener(this);
 
@@ -104,6 +146,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         mUpdateProBar = (ProgressBar) findViewById(R.id.title_update_progressBar);
         mUpdateProBar.setVisibility(View.INVISIBLE);
+
+        mLocationbtn = (ImageView) findViewById(R.id.title_location);
+        mLocationbtn.setOnClickListener(this);
 
         titleCityNameTv = (TextView) findViewById(R.id.title_city_name);
         SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
@@ -170,6 +215,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }else if(view.getId() == R.id.title_city_manager) {
             Intent intent = new Intent("android.intent.action.ChooseCity");
             startActivityForResult(intent,1);
+        }else if(view.getId() == R.id.title_location){
+            InitLocation();
+            mLocationClient.start();
+            openGPSSettings();
         }
     }
 
@@ -554,4 +603,102 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     public void onPageScrollStateChanged(int state) {
 
     }
+
+    private void getLocation() {
+        //获取位置管理服务
+        LocationManager lm;
+        String serviceName = Context.LOCATION_SERVICE;
+        lm = (LocationManager)this.getSystemService(serviceName);
+
+        //lm.setTestProviderEnabled("gps", true);
+        //查找服务信息
+        Criteria criteria = new Criteria();
+        criteria.setAccuracy(Criteria.ACCURACY_FINE); //高精度
+        criteria.setAltitudeRequired(false);
+        criteria.setBearingRequired(false);
+        criteria.setCostAllowed(true);
+        criteria.setPowerRequirement(Criteria.POWER_LOW);//低功耗
+
+        String provider = lm.getBestProvider(criteria, true); //获取GPS信息
+        Location location = lm.getLastKnownLocation(provider); //通过GPS获取位置
+
+        if(location != null) {
+            Toast.makeText(this, "GPS纬度:" + location.getLatitude() + " 经度：" + location.getLongitude(), Toast.LENGTH_LONG).show();
+            //double latitude = location.getLatitude();
+            //double longitude = location.getLongitude();
+            if(NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE) {
+                Log.d("myWeather", "网络OK");
+            }
+        }
+        else {
+            Toast.makeText(this, "location为null", Toast.LENGTH_SHORT).show();
+        }
+        lm.requestLocationUpdates(provider,100*1000,50,locationListener);
+    }
+
+    private void openGPSSettings() {
+        LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
+        if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
+            Toast.makeText(this,"GPS模块正常",Toast.LENGTH_LONG).show();
+            getLocation();
+            return;
+        }
+        Toast.makeText(this,"请开启GPS！",Toast.LENGTH_LONG).show();
+        Intent intent = new Intent(Settings.ACTION_SECURITY_SETTINGS);
+        startActivityForResult(intent,0);
+    }
+
+    private void InitLocation(){
+        LocationClientOption option = new LocationClientOption();
+        option.setLocationMode(tempMode);//设置定位模式
+        option.setCoorType(tempcoor);//返回的定位结果是百度经纬度，默认值gcj02
+        int span=5000;
+        option.setScanSpan(span);//设置发起定位请求的间隔时间为5000ms
+        option.setIsNeedAddress(true);
+        mLocationClient.setLocOption(option);
+    }
+
+    public class MyLocationListener implements BDLocationListener {
+        @Override
+        public void onReceiveLocation(BDLocation bdLocation) {
+            if(bdLocation == null)
+                return;
+            StringBuffer sb = new StringBuffer(256);
+            sb.append("time : ");
+            sb.append(bdLocation.getTime());
+            sb.append("\nerror code : ");
+            sb.append(bdLocation.getLocType());
+//            dateTv0.setText(""+bdLocation.getLocType());
+//            dateTv1.setText("" +bdLocation.getCity());
+//            dateTv2.setText(""+bdLocation.getCountry());
+//            typeTv0.setText(""+bdLocation.getLatitude());
+//            typeTv1.setText(""+bdLocation.getLongitude());
+            sb.append("\nlatitude : ");
+            sb.append(bdLocation.getLatitude());
+            sb.append("\nlongtitude : ");
+            sb.append(bdLocation.getLongitude());
+            sb.append("\nradius : ");
+            sb.append(bdLocation.getRadius());
+            if(bdLocation.getLocType() == BDLocation.TypeGpsLocation) {
+                sb.append("\nspeed : ");
+                sb.append(bdLocation.getSpeed());
+                sb.append("\nsatellite : ");
+                sb.append(bdLocation.getSatelliteNumber());
+            }else if(bdLocation.getLocType() == BDLocation.TypeNetWorkLocation) {
+                sb.append("\naddr : ");
+                sb.append(bdLocation.getAddrStr());
+            }
+            String cityName = bdLocation.getCity();
+            if(!cityName.equals("")|| cityName!=null) {
+                cityName = cityName.substring(0, cityName.length()-1);
+                sb.append("\ncityName : ");
+                sb.append(cityName);
+                mLocationClient.stop();
+            }
+
+            Log.d("MAP",sb.toString());
+        }
+    }
+
+
 }

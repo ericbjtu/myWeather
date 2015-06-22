@@ -133,7 +133,7 @@ public class AppWidgetService extends Service {
         }
     }
 
-    private boolean parseXML(String xmlData) {
+    private void parseXML(String xmlData) {
         int typeCount=0;
         try{
             XmlPullParserFactory fac = XmlPullParserFactory.newInstance();
@@ -153,7 +153,7 @@ public class AppWidgetService extends Service {
                             cityName = xmlPullParser.getText();
                             result = true;
                         }else if(xmlPullParser.getName().equals("error")){
-                            break;
+                            return;
                         }else if(xmlPullParser.getName().equals("wendu")) {
                             eventType = xmlPullParser.next();
                             wendu = xmlPullParser.getText();
@@ -190,7 +190,6 @@ public class AppWidgetService extends Service {
         }catch( Exception e) {
             e.printStackTrace();
         }
-        return false;
     }
 
 }

@@ -70,7 +70,7 @@ public class AppWidgetInfo extends AppWidgetProvider {
         if("android.appwidget.action.APPWIDGET_UPDATE".equals(action) && isFirst) {
             isFirst = false;
             //开启服务
-            context.startService(WIDGET_SERVICE_INTENT);
+            //context.startService(WIDGET_SERVICE_INTENT);
         }
         if (ACTION_UPDATE_WEATHER.equals(action)) {
             // “更新”广播
