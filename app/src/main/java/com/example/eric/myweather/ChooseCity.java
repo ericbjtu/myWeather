@@ -112,6 +112,7 @@ public class ChooseCity extends ActionBarActivity implements View.OnClickListene
 
                 Intent intent = new Intent();
                 intent.putExtra("CityNumber",returnCityNumber);
+                intent.putExtra("CityName",returnCityName);
                 setResult(RESULT_OK, intent);
                 finish();
             }

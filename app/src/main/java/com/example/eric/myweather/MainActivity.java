@@ -1,15 +1,12 @@
 package com.example.eric.myweather;
 
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.res.Resources;
 import android.graphics.drawable.Drawable;
-import android.location.Address;
-import android.location.Criteria;
-import android.location.Geocoder;
-import android.location.Location;
-import android.location.LocationListener;
 import android.location.LocationManager;
 import android.os.Bundle;
 import android.os.Handler;
@@ -24,8 +21,11 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,7 +49,6 @@ import org.xmlpull.v1.XmlPullParser;
 import org.xmlpull.v1.XmlPullParserFactory;
 
 import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.StringReader;
@@ -69,7 +68,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private ProgressBar mUpdateProBar;
     private TodayWeather todayWeather;
 
-    LocationListener locationListener;
+    // for LBS
     public LocationClient mLocationClient = null;
     public BDLocationListener myListener = new MyLocationListener();
     private LocationClientOption.LocationMode tempMode = LocationClientOption.LocationMode.Hight_Accuracy;
@@ -99,6 +98,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private List<View> views;
     private ImageView[] dots;
     private int[] ids = {R.id.iv1, R.id.iv2};
+    // future weather
     private TextView dateTv0,degreeTv0,typeTv0,windTv0;
     private ImageView weatherImg0;
 
@@ -115,6 +115,9 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     private ImageView weatherImg4,weatherImg5;
 
     private DrawerLayout mDrawerLayout = null;
+    private ListView mDrawerListView = null;
+    private List<String> drawerCityName;
+    private List<String> drawerCityNum;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -128,20 +131,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         mLocationClient = new LocationClient(getApplicationContext()); //声明LocationClient类
         mLocationClient.registerLocationListener(myListener); //注册监听函数
-        locationListener = new LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                if(location != null) {
-                    ;
-                }
-            }
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {}
-            @Override
-            public void onProviderEnabled(String provider) {}
-            @Override
-            public void onProviderDisabled(String provider) {}
-        };
 
         mUpdatebtn = (ImageView) findViewById(R.id.title_update_btn);
         mUpdatebtn.setOnClickListener(this);
@@ -162,7 +151,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
         String cityName = sharedPreferences.getString("main_city_name","北京");//缺省值为北京
         String cityCode= sharedPreferences.getString("main_city_code","101010100");
-        titleCityNameTv.setText(cityName+"天气");
+        titleCityNameTv.setText(cityName + "天气");
         queryWeatherCode(cityCode);
 
         initView();
@@ -176,6 +165,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             public void onDrawerClosed(View drawerView) {
                 super.onDrawerClosed(drawerView);
             }
+
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
@@ -216,6 +206,77 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
         weatherImg5 = (ImageView) views.get(1).findViewById(R.id.weatherPic_day5);
         weatherImg5.setVisibility(View.INVISIBLE);
+
+        drawerCityName = new ArrayList<String>();
+        drawerCityNum = new ArrayList<String>();
+        SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
+        int drawerSize = sharedPreferences.getInt("DrawerSize",0);//缺省值0
+        for(int i=0;i<drawerSize;i++){
+            String cityCode= sharedPreferences.getString("DrawerCode"+i,"101010100");
+            String cityName= sharedPreferences.getString("DrawerName"+i,"北京");
+            drawerCityNum.add(cityCode);
+            drawerCityName.add(cityName);
+        }
+        mDrawerListView = (ListView) findViewById(R.id.drawer_list_view);
+        updateDrawerList();
+        mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String cityNum = drawerCityNum.get(position);
+                queryWeatherCode(cityNum);
+                mDrawerLayout.closeDrawers();
+            }
+        });
+        mDrawerListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener(){
+            @Override
+            public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+                final int pos = position;
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage("确认移除该城市吗？");
+                builder.setTitle("提示：");
+                builder.setPositiveButton("确认", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                        //删除城市
+                        drawerCityNum.remove(pos);
+                        drawerCityName.remove(pos);
+
+                        updateSharedPreferenceDrawerList();
+                        updateDrawerList();
+                    }
+                });
+                builder.setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+                builder.create().show();
+                return true;
+            }
+        });
+    }
+
+    private void updateSharedPreferenceDrawerList(){
+        SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
+        SharedPreferences.Editor editor = sharedPreferences.edit();
+        int drawerSize = drawerCityName.size();
+        editor.putInt("DrawerSize",drawerSize);
+        for(int i=0;i<drawerSize;i++){
+            editor.putString("DrawerCode"+i, drawerCityNum.get(i));
+            editor.putString("DrawerName"+i, drawerCityName.get(i));
+        }
+        editor.commit();
+    }
+    private void updateDrawerList(){
+        String[] data = new String[drawerCityNum.size()];
+        for(int i=0,j=drawerCityNum.size();i<j;i++){
+            data[i]= drawerCityName.get(i);
+        }
+        ArrayAdapter<String> adapter;
+        adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_expandable_list_item_1,data);
+        mDrawerListView.setAdapter(adapter);
     }
 
     @Override
@@ -242,7 +303,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         }else if(view.getId() == R.id.title_location){
             InitLocation();
             mLocationClient.start();
-            openGPSSettings();
+            //openGPSSettings();
         }
     }
 
@@ -443,15 +504,15 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         //update today info
         titleCityNameTv.setText(todayWeather.getCity()+"天气");
         timeTv.setText(todayWeather.getUpdatetime()+"发布");
-        humidityTv.setText("湿度："+todayWeather.getShidu());
+        humidityTv.setText(todayWeather.getShidu());
         pmDataTv.setText(todayWeather.getPm25());
         pmQualityTv.setText(todayWeather.getQuality());
         String highTemp = todayWeather.getHigh(0).trim();
         String lowTemp = todayWeather.getLow(0).trim();
-        temperatureHighTv.setText(highTemp+" ");
-        temperatureLowTv.setText("~"+lowTemp);
+        temperatureHighTv.setText(todayWeather.getWendu()+"℃");
+        temperatureLowTv.setText(lowTemp+"~"+highTemp);
         climateTv.setText(todayWeather.getType(0));
-        windTv.setText("风力："+todayWeather.getFengli(0));
+        windTv.setText(todayWeather.getFengli(0));
 
 
         //update the weather picture
@@ -520,8 +581,17 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected  void onActivityResult(int requestCode, int resultCode, Intent data) {
         if(requestCode == 1 && resultCode == RESULT_OK) {
             String cityNumber = data.getStringExtra("CityNumber");
+            String cityName = data.getStringExtra("CityName");
             if(NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE) {
                 queryWeatherCode(cityNumber);
+                mDrawerLayout.closeDrawers();   //close the drawer
+                if(!drawerCityNum.contains(cityNumber)){
+                    drawerCityNum.add(cityNumber);
+                    drawerCityName.add(cityName);
+
+                    updateSharedPreferenceDrawerList();
+                    updateDrawerList();
+                }
             }
         }
     }
@@ -598,43 +668,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     }
 
-    private void getLocation() {
-        //获取位置管理服务
-        LocationManager lm;
-        String serviceName = Context.LOCATION_SERVICE;
-        lm = (LocationManager)this.getSystemService(serviceName);
-
-        //lm.setTestProviderEnabled("gps", true);
-        //查找服务信息
-        Criteria criteria = new Criteria();
-        criteria.setAccuracy(Criteria.ACCURACY_FINE); //高精度
-        criteria.setAltitudeRequired(false);
-        criteria.setBearingRequired(false);
-        criteria.setCostAllowed(true);
-        criteria.setPowerRequirement(Criteria.POWER_LOW);//低功耗
-
-        String provider = lm.getBestProvider(criteria, true); //获取GPS信息
-        Location location = lm.getLastKnownLocation(provider); //通过GPS获取位置
-
-        if(location != null) {
-            Toast.makeText(this, "GPS纬度:" + location.getLatitude() + " 经度：" + location.getLongitude(), Toast.LENGTH_LONG).show();
-            //double latitude = location.getLatitude();
-            //double longitude = location.getLongitude();
-            if(NetUtil.getNetworkState(this) != NetUtil.NETWORN_NONE) {
-                Log.d("myWeather", "网络OK");
-            }
-        }
-        else {
-            Toast.makeText(this, "location为null", Toast.LENGTH_SHORT).show();
-        }
-        lm.requestLocationUpdates(provider,100*1000,50,locationListener);
-    }
-
     private void openGPSSettings() {
         LocationManager lm = (LocationManager) this.getSystemService(Context.LOCATION_SERVICE);
         if(lm.isProviderEnabled(LocationManager.GPS_PROVIDER)){
             Toast.makeText(this,"GPS模块正常",Toast.LENGTH_LONG).show();
-            getLocation();
             return;
         }
         Toast.makeText(this,"请开启GPS！",Toast.LENGTH_LONG).show();
@@ -683,7 +720,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 sb.append(bdLocation.getAddrStr());
             }
             String cityName = bdLocation.getCity();
-            if(!cityName.equals("")|| cityName!=null) {
+            if(cityName!=null) {
                 cityName = cityName.substring(0, cityName.length()-1);
                 sb.append("\ncityName : ");
                 sb.append(cityName);
@@ -703,7 +740,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                     queryWeatherCode(returnCityNumber);
                 }
             }
-
             Log.d("MAP",sb.toString());
         }
     }

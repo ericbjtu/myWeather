@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="20.0sp"
+            android:textSize="18.0sp"
             />
         <TextView
             android:id="@+id/climate_day0"
@@ -74,7 +74,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="20.0sp"
+            android:textSize="18.0sp"
             />
         <TextView
             android:id="@+id/climate_day1"
@@ -119,7 +119,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="20.0sp"
+            android:textSize="18.0sp"
             />
         <TextView
             android:id="@+id/climate_day2"
