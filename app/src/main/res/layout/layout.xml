@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="match_parent">
+
+
+    <LinearLayout
+        android:id="@+id/id_drawer"
+        android:layout_width="220dp"
+        android:layout_height="match_parent"
+        android:layout_gravity="start"
+        android:background="#ffffff"
+        android:orientation="vertical"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:paddingTop="30dp">
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:paddingRight="15dp"
+                    android:paddingTop="2dp"
+                    android:src="@drawable/drawer_add" />
+
+                <TextView
+                    android:id="@+id/drawer_add_city"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="添加城市"
+                    android:textColor="#4d4d4d"
+                    android:textSize="15sp" />
+            </LinearLayout>
+
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="15dp"
+                android:src="@drawable/drawer_div" />
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:paddingTop="8dp">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:paddingLeft="7dp"
+                    android:paddingRight="13dp"
+                    android:paddingTop="2dp"
+                    android:src="@drawable/drawer_location_city"
+                    android:layout_marginLeft="0dp" />
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="北京（定位城市）"
+                    android:layout_gravity="center_vertical"
+                    android:textSize="15sp"
+                    android:textColor="#4d4d4d"
+                    android:singleLine="true"
+                    />
+            </LinearLayout>
+            <ImageView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="8dp"
+                android:src="@drawable/drawer_div" />
+        </LinearLayout>
+
+        <TextView xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@android:id/text1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:paddingLeft="33dp"
+            android:paddingTop="13dp"
+            android:paddingBottom="12dp"
+            android:textAppearance="?android:attr/textAppearanceListItem"
+            android:textColor="#4d4d4d"
+            android:textSize="15sp"
+            android:gravity="center_vertical"
+            android:textAlignment="viewStart"
+            android:text="北京"
+            />
+</LinearLayout>
+</LinearLayout>

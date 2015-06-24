@@ -83,12 +83,13 @@
                         android:id="@+id/weather_detail"
                         android:layout_width="fill_parent"
 
-                        android:layout_height="wrap_content">
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentTop="true">
 
                         <RelativeLayout
                             android:id="@+id/center_weather"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="220dp"
+                            android:layout_height="220dp"
                             android:layout_alignParentTop="true"
                             android:layout_centerHorizontal="true"
                             android:layout_marginTop="30dp"
@@ -171,7 +172,7 @@
                         <LinearLayout
                             android:id="@+id/index_linearLayout"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_height="80dp"
                             android:layout_below="@+id/center_weather"
                             android:layout_centerHorizontal="true"
                             android:gravity="center_horizontal"
@@ -189,17 +190,17 @@
                                     android:layout_height="wrap_content"
                                     android:text="风力"
                                     android:textColor="#ff0dacb7"
-                                    android:textSize="20sp" />
+                                    android:textSize="15sp" />
 
                                 <TextView
                                     android:id="@+id/content_wind"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="15dp"
+                                    android:layout_marginTop="10dp"
                                     android:singleLine="true"
                                     android:text="微风"
                                     android:textColor="#ff0dacb7"
-                                    android:textSize="15.0sp" />
+                                    android:textSize="12.0sp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -216,16 +217,16 @@
                                     android:layout_height="wrap_content"
                                     android:text="PM 2.5"
                                     android:textColor="#ff0dacb7"
-                                    android:textSize="20sp" />
+                                    android:textSize="15sp" />
 
                                 <TextView
                                     android:id="@+id/content_pm_value"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="15dp"
+                                    android:layout_marginTop="10dp"
                                     android:text="100"
                                     android:textColor="#ff0dacb7"
-                                    android:textSize="15.0sp" />
+                                    android:textSize="12.0sp" />
                             </LinearLayout>
 
                             <LinearLayout
@@ -241,17 +242,17 @@
                                     android:layout_height="wrap_content"
                                     android:text="空气质量"
                                     android:textColor="#ff0dacb7"
-                                    android:textSize="20sp" />
+                                    android:textSize="15sp" />
                                 <!--空气质量-->
                                 <TextView
                                     android:id="@+id/content_pm_description"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="15dp"
+                                    android:layout_marginTop="10dp"
                                     android:singleLine="true"
                                     android:text="重度污染"
                                     android:textColor="#ff0dacb7"
-                                    android:textSize="15.0sp" />
+                                    android:textSize="12.0sp" />
 
                             </LinearLayout>
 
@@ -268,17 +269,17 @@
                                     android:layout_height="wrap_content"
                                     android:text="湿度"
                                     android:textColor="#ff0dacb7"
-                                    android:textSize="20sp" />
+                                    android:textSize="15sp" />
 
                                 <TextView
                                     android:id="@+id/content_humidity"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:layout_marginTop="15dp"
+                                    android:layout_marginTop="10dp"
                                     android:singleLine="true"
                                     android:text="57%"
                                     android:textColor="#ff0dacb7"
-                                    android:textSize="15.0sp" />
+                                    android:textSize="12.0sp" />
 
                             </LinearLayout>
                         </LinearLayout>
@@ -288,11 +289,14 @@
 
                     <android.support.v4.view.ViewPager
                         android:id="@+id/weatherInfoViewPager"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_below="@+id/weather_detail"
-                        android:layout_marginTop="10dp"
-                        android:background="@drawable/shape1">
+                        android:layout_width="fill_parent"
+                        android:layout_height="130dp"
+                        android:layout_alignParentBottom="true"
+                        android:background="@drawable/shape1"
+                        android:layout_below="@id/weather_detail"
+                        >
+                        <!--android:layout_alignParentBottom="true"-->
+
 
                     </android.support.v4.view.ViewPager>
 
@@ -324,6 +328,7 @@
             </FrameLayout>
 
             <!-- The navigation drawer -->
+
 
             <LinearLayout
                 android:id="@+id/id_drawer"
@@ -368,23 +373,33 @@
                         android:paddingTop="15dp"
                         android:src="@drawable/drawer_div" />
                     <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:layout_width="fill_parent"
+                        android:layout_height="match_parent"
+                        android:orientation="horizontal"
+                        android:paddingTop="8dp">
 
                         <ImageView
-                            android:layout_width="40dp"
-                            android:layout_height="40dp"
-                            android:src="@drawable/base_action_bar_action_city"/>
+                            android:layout_width="33dp"
+                            android:layout_height="33dp"
+                            android:paddingLeft="5dp"
+                            android:paddingRight="15dp"
+                            android:paddingTop="2dp"
+                            android:src="@drawable/drawer_location_city"/>
                         <TextView
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:text="北京（定位城市）"
                             android:layout_gravity="center_vertical"
                             android:textSize="15sp"
+                            android:textColor="#4d4d4d"
                             android:singleLine="true"
                             />
                     </LinearLayout>
+                    <ImageView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="8dp"
+                        android:src="@drawable/drawer_div" />
                 </LinearLayout>
 
                 <ListView
@@ -398,6 +413,13 @@
 
         </android.support.v4.widget.DrawerLayout>
     </RelativeLayout>
+
+    <TableRow
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentLeft="true"
+        android:layout_alignParentStart="true"></TableRow>
 
 
 </RelativeLayout>

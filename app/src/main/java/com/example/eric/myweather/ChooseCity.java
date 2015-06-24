@@ -55,7 +55,8 @@ public class ChooseCity extends ActionBarActivity implements View.OnClickListene
                 data[i]= mSearchList.get(i).getProvince() + "-" + mSearchList.get(i).getCity();
             }
             ArrayAdapter<String> adapter;
-            adapter = new ArrayAdapter<String>(ChooseCity.this,android.R.layout.simple_expandable_list_item_1,data);
+            adapter = new ArrayAdapter<String>(ChooseCity.this,R.layout.drawer_list_style,data);
+            //adapter = new ArrayAdapter<String>(ChooseCity.this,android.R.layout.simple_expandable_list_item_1,data);
             mlistView.setAdapter(adapter);
         }
 
@@ -92,7 +93,7 @@ public class ChooseCity extends ActionBarActivity implements View.OnClickListene
 
         mlistView = (ListView) findViewById(R.id.city_list_view);
         ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<String>(ChooseCity.this,android.R.layout.simple_expandable_list_item_1,data);
+        adapter = new ArrayAdapter<String>(ChooseCity.this,R.layout.drawer_list_style,data);
         mlistView.setAdapter(adapter);
 
         mlistView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
