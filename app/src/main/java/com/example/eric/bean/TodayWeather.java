@@ -4,6 +4,7 @@ import com.example.eric.myweather.R;
 import com.example.eric.util.PinYinUtil;
 
 import java.lang.reflect.Field;
+import java.util.Random;
 
 /**
  * Created by Eric on 2015/3/23.
@@ -29,7 +30,11 @@ public class TodayWeather {
     private String[] type = new String[5];
 
     public TodayWeather() {
-        this.pm25 = "0";
+        Random random = new Random();
+
+        int pm = random.nextInt(50);
+        this.pm25 = ""+pm;
+        this.quality="优";
         for(int i=0;i<type.length;i++)
             type[i] = "晴";
     }

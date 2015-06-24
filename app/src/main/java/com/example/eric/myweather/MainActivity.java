@@ -64,6 +64,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
     private ImageView mUpdatebtn, mOpenDrawerbtn,mLocationbtn;
     private TextView mChooseCitybtn;
+    private String currentCityCode;
 
     private ProgressBar mUpdateProBar;
     private TodayWeather todayWeather;
@@ -126,8 +127,10 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         Log.d("MyAPP","MainActivity->onCreate()");
         m_myApplication = MyApplication.getInstance();
 
-        //JPushInterface.setDebugMode(true);
-        //JPushInterface.init(this);
+        currentCityCode = null;
+
+        JPushInterface.setDebugMode(true);
+        JPushInterface.init(this);
 
         mLocationClient = new LocationClient(getApplicationContext()); //声明LocationClient类
         mLocationClient.registerLocationListener(myListener); //注册监听函数
@@ -148,15 +151,16 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         mLocationbtn.setOnClickListener(this);
 
         titleCityNameTv = (TextView) findViewById(R.id.title_city_name);
+
+        initView();
+        initDots();
+        initComponents();
+
         SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
         String cityName = sharedPreferences.getString("main_city_name","北京");//缺省值为北京
         String cityCode= sharedPreferences.getString("main_city_code","101010100");
         titleCityNameTv.setText(cityName + "天气");
         queryWeatherCode(cityCode);
-
-        initView();
-        initDots();
-        initComponents();
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
 
@@ -289,6 +293,8 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
                 Log.d("myWeather", "网络OK");
                 mUpdateProBar.setVisibility(View.VISIBLE);
                 mUpdatebtn.setVisibility(View.INVISIBLE);
+                if(currentCityCode != null)
+                    cityCode = currentCityCode;
                 queryWeatherCode(cityCode);
             }else {
                 Log.d("myWeather","网络挂了");
@@ -308,6 +314,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     }
 
     private void queryWeatherCode(String cityCode) {
+            currentCityCode = cityCode;
         //xml
         final String address = "http://wthrcdn.etouch.cn/WeatherApi?citykey="+cityCode;
 
@@ -516,20 +523,22 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
 
 
         //update the weather picture
-        String typeImg = "biz_plugin_weather_" + PinYinUtil.converterToSpell(todayWeather.getType(0));
-        Class aClass = R.drawable.class;
+
+//        String typeImg = "biz_plugin_weather_" + PinYinUtil.converterToSpell(todayWeather.getType(0));
+//        Class aClass = R.drawable.class;
         int typeId = -1;
-        try {
-            Field field = aClass.getField(typeImg);
-            Object value = field.get(Integer.valueOf(0));
-            typeId = (int) value;
-        }catch (NoSuchFieldException e) {
-            if(-1 == typeId)
-                e.getMessage();
-                typeId = R.drawable.biz_plugin_weather_qing;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        }
+        typeId = todayWeather.getTypeId(todayWeather.getType(0));
+//        try {
+//            Field field = aClass.getField(typeImg);
+//            Object value = field.get(Integer.valueOf(0));
+//            typeId = (int) value;
+//        }catch (NoSuchFieldException e) {
+//            if(-1 == typeId)
+//                e.getMessage();
+//                typeId = R.drawable.biz_plugin_weather_qing;
+//        } catch (IllegalAccessException e) {
+//            e.printStackTrace();
+//        }
 
         drawable = getResources().getDrawable(typeId);
         weatherImg.setImageDrawable(drawable);
@@ -598,7 +607,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
     protected  void updateBackground(){
         //添加城市的北京图片
         SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
-        String cityName=sharedPreferences.getString("main_city_name","");
+        String cityName=sharedPreferences.getString("main_city_name","北京");
         LinearLayout lly=(LinearLayout)findViewById(R.id.content);
         Resources resources = getBaseContext().getResources();
         Drawable d=resources.getDrawable(R.drawable.city_beijing);
