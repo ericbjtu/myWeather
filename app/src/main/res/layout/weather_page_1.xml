@@ -16,7 +16,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="15.0sp"
+            android:textSize="12.0sp"
             />
         <ImageView
             android:id="@+id/weatherPic_day0"
@@ -29,7 +29,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="18.0sp"
+            android:textSize="15.0sp"
             />
         <TextView
             android:id="@+id/climate_day0"
@@ -37,16 +37,9 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="15.0sp"
+            android:textSize="12.0sp"
             />
-        <TextView
-            android:id="@+id/wind_day0"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:text="N/A"
-            android:textSize="15.0sp"
-            />
+
     </LinearLayout>
 
     <LinearLayout
@@ -61,7 +54,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="15.0sp"
+            android:textSize="12.0sp"
             />
         <ImageView
             android:id="@+id/weatherPic_day1"
@@ -74,7 +67,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="18.0sp"
+            android:textSize="15.0sp"
             />
         <TextView
             android:id="@+id/climate_day1"
@@ -82,16 +75,9 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="15.0sp"
+            android:textSize="12.0sp"
             />
-        <TextView
-            android:id="@+id/wind_day1"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:text="N/A"
-            android:textSize="15.0sp"
-            />
+
     </LinearLayout>
 
     <LinearLayout
@@ -106,7 +92,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="15.0sp"
+            android:textSize="12.0sp"
             />
         <ImageView
             android:id="@+id/weatherPic_day2"
@@ -119,7 +105,7 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="18.0sp"
+            android:textSize="15.0sp"
             />
         <TextView
             android:id="@+id/climate_day2"
@@ -127,15 +113,8 @@
             android:layout_height="wrap_content"
             android:textColor="@android:color/white"
             android:text="N/A"
-            android:textSize="15.0sp"
+            android:textSize="12.0sp"
             />
-        <TextView
-            android:id="@+id/wind_day2"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:textColor="@android:color/white"
-            android:text="N/A"
-            android:textSize="15.0sp"
-            />
+
     </LinearLayout>
 </LinearLayout>

@@ -181,31 +181,31 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         dateTv0 =(TextView) views.get(0).findViewById(R.id.week_day0);
         degreeTv0 = (TextView) views.get(0).findViewById(R.id.degree_day0);
         typeTv0 = (TextView) views.get(0).findViewById(R.id.climate_day0);
-        windTv0 = (TextView) views.get(0).findViewById(R.id.wind_day0);
+
         weatherImg0 = (ImageView) views.get(0).findViewById(R.id.weatherPic_day0);
 
         dateTv1 =(TextView) views.get(0).findViewById(R.id.week_day1);
         degreeTv1 = (TextView) views.get(0).findViewById(R.id.degree_day1);
         typeTv1 = (TextView) views.get(0).findViewById(R.id.climate_day1);
-        windTv1 = (TextView) views.get(0).findViewById(R.id.wind_day1);
+
         weatherImg1 = (ImageView) views.get(0).findViewById(R.id.weatherPic_day1);
 
         dateTv2 =(TextView) views.get(0).findViewById(R.id.week_day2);
         degreeTv2 = (TextView) views.get(0).findViewById(R.id.degree_day2);
         typeTv2 = (TextView) views.get(0).findViewById(R.id.climate_day2);
-        windTv2 = (TextView) views.get(0).findViewById(R.id.wind_day2);
+
         weatherImg2 = (ImageView) views.get(0).findViewById(R.id.weatherPic_day2);
 
         dateTv3 =(TextView) views.get(1).findViewById(R.id.week_day3);
         degreeTv3 = (TextView) views.get(1).findViewById(R.id.degree_day3);
         typeTv3 = (TextView) views.get(1).findViewById(R.id.climate_day3);
-        windTv3 = (TextView) views.get(1).findViewById(R.id.wind_day3);
+
         weatherImg3 = (ImageView) views.get(1).findViewById(R.id.weatherPic_day3);
 
         dateTv4 =(TextView) views.get(1).findViewById(R.id.week_day4);
         degreeTv4 = (TextView) views.get(1).findViewById(R.id.degree_day4);
         typeTv4 = (TextView) views.get(1).findViewById(R.id.climate_day4);
-        windTv4 = (TextView) views.get(1).findViewById(R.id.wind_day4);
+
         weatherImg4 = (ImageView) views.get(1).findViewById(R.id.weatherPic_day4);
 
         weatherImg5 = (ImageView) views.get(1).findViewById(R.id.weatherPic_day5);
@@ -279,7 +279,7 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
             data[i]= drawerCityName.get(i);
         }
         ArrayAdapter<String> adapter;
-        adapter = new ArrayAdapter<String>(MainActivity.this,android.R.layout.simple_expandable_list_item_1,data);
+        adapter = new ArrayAdapter<String>(MainActivity.this,R.layout.drawer_list_style,data);
         mDrawerListView.setAdapter(adapter);
     }
 
@@ -462,7 +462,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         dateTv0.setText(todayWeather.getYest_date());
         degreeTv0.setText(todayWeather.getYest_low().trim()+"~"+todayWeather.getYest_high().trim());
         typeTv0.setText(todayWeather.getYest_type());
-        windTv0.setText(todayWeather.getYest_fengli());
 
         int typeId0 = todayWeather.getTypeId(todayWeather.getYest_type());
         Drawable drawable = getResources().getDrawable(typeId0);
@@ -472,7 +471,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         dateTv1.setText(todayWeather.getDate(1));
         degreeTv1.setText(todayWeather.getLow(1).trim()+"~"+todayWeather.getHigh(1).trim());
         typeTv1.setText(todayWeather.getType(1));
-        windTv1.setText(todayWeather.getFengli(1));
 
         int typeId1 = todayWeather.getTypeId(todayWeather.getType(1));
         drawable = getResources().getDrawable(typeId1);
@@ -482,7 +480,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         dateTv2.setText(todayWeather.getDate(2));
         degreeTv2.setText(todayWeather.getLow(2).trim()+"~"+todayWeather.getHigh(2).trim());
         typeTv2.setText(todayWeather.getType(2));
-        windTv2.setText(todayWeather.getFengli(2));
 
         int typeId2 = todayWeather.getTypeId(todayWeather.getType(2));
         drawable = getResources().getDrawable(typeId2);
@@ -492,7 +489,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         dateTv3.setText(todayWeather.getDate(3));
         degreeTv3.setText(todayWeather.getLow(3).trim()+"~"+todayWeather.getHigh(3).trim());
         typeTv3.setText(todayWeather.getType(3));
-        windTv3.setText(todayWeather.getFengli(3));
 
         int typeId3 = todayWeather.getTypeId(todayWeather.getType(3));
         drawable = getResources().getDrawable(typeId3);
@@ -502,7 +498,6 @@ public class MainActivity extends ActionBarActivity implements View.OnClickListe
         dateTv4.setText(todayWeather.getDate(4));
         degreeTv4.setText(todayWeather.getLow(4).trim()+"~"+todayWeather.getHigh(4).trim());
         typeTv4.setText(todayWeather.getType(4));
-        windTv4.setText(todayWeather.getFengli(4));
 
         int typeId4 = todayWeather.getTypeId(todayWeather.getType(4));
         drawable = getResources().getDrawable(typeId4);
