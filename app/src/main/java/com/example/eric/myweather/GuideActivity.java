@@ -2,6 +2,7 @@ package com.example.eric.myweather;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.support.v4.view.ViewPager;
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -29,19 +30,32 @@ public class GuideActivity extends Activity implements ViewPager.OnPageChangeLis
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_guide);
-        initViews();
-        initDots();
+        SharedPreferences sharedPreferences = getSharedPreferences("config", MODE_PRIVATE);
+        boolean firstOpen = sharedPreferences.getBoolean("first_open",true);//缺省值为北京
+        if(firstOpen) {
+            setContentView(R.layout.activity_guide);
+            initViews();
+            initDots();
 
-        enterBtn = (Button)views.get(2).findViewById(R.id.enter_button);
-        enterBtn.setOnClickListener(new View.OnClickListener(){
-            @Override
-            public void onClick(View view) {
-                Intent i = new Intent(GuideActivity.this, MainActivity.class);
-                startActivity(i);
-                finish();
-            }
-        });
+            SharedPreferences.Editor editor = sharedPreferences.edit();
+            editor.putBoolean("first_open",false);
+            editor.commit();
+
+            enterBtn = (Button) views.get(2).findViewById(R.id.enter_button);
+            enterBtn.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent i = new Intent(GuideActivity.this, MainActivity.class);
+                    startActivity(i);
+                    finish();
+                }
+            });
+        }else{
+            setContentView(R.layout.drawer_layout);
+            Intent i = new Intent(GuideActivity.this, MainActivity.class);
+            startActivity(i);
+            finish();
+        }
 
     }
 

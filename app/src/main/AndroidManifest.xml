@@ -121,10 +121,8 @@
             android:name=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
-                <!--<action android:name="android.intent.action.MainActivity" />
-                <category android:name="android.intent.category.DEFAULT" />-->
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
+                <action android:name="android.intent.action.MainActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
         <activity
@@ -138,10 +136,10 @@
         <activity
             android:name=".GuideActivity"
             android:label="@string/title_activity_guide" >
-            <!--<intent-filter>
+            <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>-->
+            </intent-filter>
         </activity>
 
         <receiver android:name=".AppWidgetInfo" >
